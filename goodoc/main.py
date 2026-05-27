@@ -6,6 +6,7 @@ Supported formats:
     .docx  → Google Docs
     .xlsx  → Google Sheets
     .pptx  → Google Slides
+    .pptm  → Google Slides
 
 Credentials: ~/.goodoc/credentials.json
 Token: ~/.goodoc/token.json
@@ -42,6 +43,10 @@ MIME_MAP = {
     ),
     ".pptx": (
         "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        "application/vnd.google-apps.presentation",
+    ),
+    ".pptm": (
+        "application/vnd.ms-powerpoint.presentation.macroEnabled.12",
         "application/vnd.google-apps.presentation",
     ),
 }

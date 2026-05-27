@@ -1,0 +1,26 @@
+# credentials & tokens — never commit
+credentials.json
+token.json
+
+# python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+*.egg
+.python-version
+
+# claude internal
+.claude/
+
+# macOS
+.DS_Store
+
+# IDE
+.idea/
+
+# tools
+cliff.toml
+uv.lock

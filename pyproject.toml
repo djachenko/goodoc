@@ -29,6 +29,9 @@ dependencies = [
     "typer>=0.9",
 ]
 
+[project.optional-dependencies]
+release = ["build", "python-semantic-release"]
+
 [project.urls]
 Homepage = "https://github.com/djachenko/goodoc"
 Repository = "https://github.com/djachenko/goodoc"
@@ -37,14 +40,9 @@ Issues = "https://github.com/djachenko/goodoc/issues"
 [project.scripts]
 goodoc = "goodoc.main:app"
 
-[tool.bumpversion]
-current_version = "0.1.0"
-commit = true
-tag = true
-tag_name = "v{new_version}"
-pre_commit_hooks = ["git-cliff --latest --strip header -o RELEASE_NOTES.md"]
-
-[[tool.bumpversion.files]]
-filename = "pyproject.toml"
-search = 'version = "{current_version}"'
-replace = 'version = "{new_version}"'
+[tool.semantic_release]
+version_toml = ["pyproject.toml:project.version"]
+branch = "main"
+build_command = "pip install build && python -m build"
+changelog_file = "CHANGELOG.md"
+commit_message = "chore(release): v{version} [skip ci]"

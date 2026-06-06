@@ -23,4 +23,3 @@ dist/
 
 # tools
 cliff.toml
-uv.lock

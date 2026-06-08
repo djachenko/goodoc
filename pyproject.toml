@@ -32,6 +32,9 @@ dependencies = [
 [project.optional-dependencies]
 release = ["build", "python-semantic-release"]
 
+[tool.setuptools.packages.find]
+where = ["src"]
+
 [project.urls]
 Homepage = "https://github.com/djachenko/goodoc"
 Repository = "https://github.com/djachenko/goodoc"

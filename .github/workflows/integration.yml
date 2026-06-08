@@ -51,6 +51,7 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           repository-url: https://test.pypi.org/legacy/
+          skip-existing: true
 
       - name: Smoke test
         run: |
@@ -59,5 +60,11 @@ jobs:
           with open('pyproject.toml', 'rb') as f:
               print(tomllib.load(f)['project']['version'])
           ")
-          pip install --index-url https://test.pypi.org/simple/ --no-deps goodoc==$VERSION
+
+          for i in {1..5}; do
+            pip install --index-url https://test.pypi.org/simple/ --no-deps goodoc==$VERSION && break
+            echo "Attempt $i failed, retrying in 15s..."
+            sleep 15
+          done
+
           goodoc --help

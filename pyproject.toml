@@ -8,18 +8,19 @@ version = "0.1.0"
 description = "Upload office files to Google Drive with auto-conversion to Docs/Sheets/Slides"
 readme = "README.md"
 license = "MIT"
+license-files = ["LICENSE"]
 authors = [{ name = "Igor Djachenko" }]
 requires-python = ">=3.10"
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: End Users/Desktop",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: MacOS",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Utilities",
 ]
 dependencies = [
@@ -30,7 +31,11 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+test = ["pytest", "ruff", "mypy"]
 release = ["build", "python-semantic-release"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
 
 [project.urls]
 Homepage = "https://github.com/djachenko/goodoc"
@@ -40,9 +45,12 @@ Issues = "https://github.com/djachenko/goodoc/issues"
 [project.scripts]
 goodoc = "goodoc.main:app"
 
+[tool.mypy]
+ignore_missing_imports = true
+
 [tool.semantic_release]
 version_toml = ["pyproject.toml:project.version"]
-branch = "main"
+branch = "master"
 build_command = "pip install build && python -m build"
 changelog_file = "CHANGELOG.md"
 commit_message = "chore(release): v{version} [skip ci]"

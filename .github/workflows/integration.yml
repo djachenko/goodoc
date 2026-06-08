@@ -3,7 +3,7 @@ name: Integration
 on:
   pull_request:
     branches:
-      - main
+      - master
 
 jobs:
   integration:
@@ -17,8 +17,8 @@ jobs:
           ref: ${{ github.head_ref }}
           fetch-depth: 0
 
-      - name: Merge main
-        run: git merge origin/main --no-edit
+      - name: Merge master
+        run: git merge origin/master --no-edit
 
       - name: Set up Python
         uses: actions/setup-python@v6

@@ -45,6 +45,9 @@ Issues = "https://github.com/djachenko/goodoc/issues"
 [project.scripts]
 goodoc = "goodoc.main:app"
 
+[tool.mypy]
+ignore_missing_imports = true
+
 [tool.semantic_release]
 version_toml = ["pyproject.toml:project.version"]
 branch = "main"

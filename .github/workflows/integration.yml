@@ -19,8 +19,8 @@ jobs:
 
       - name: Merge master
         run: |
-          git config user.email "i.s.djachenko@gmail.com"
-          git config user.name "Igor Djachenko"
+          git config user.name "bot@djachenko[bot]"
+          git config user.email "2991967+bot@djachenko[bot]@users.noreply.github.com"
           git merge origin/master --no-edit
 
       - name: Set up Python

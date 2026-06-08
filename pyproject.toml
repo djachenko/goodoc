@@ -20,6 +20,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Utilities",
 ]
 dependencies = [
@@ -30,6 +31,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+test = ["pytest", "ruff", "mypy"]
 release = ["build", "python-semantic-release"]
 
 [tool.setuptools.packages.find]

@@ -1,6 +1,6 @@
 # goodoc
 
-Upload `.docx`, `.xlsx`, and `.pptx` files to Google Drive with automatic conversion to native Google formats (Docs / Sheets / Slides). Integrates into macOS Finder as a right-click Quick Action.
+Upload `.docx`, `.xlsx`, `.pptx`, and `.pptm` files to Google Drive with automatic conversion to native Google formats (Docs / Sheets / Slides). Integrates into macOS Finder as a right-click Quick Action.
 
 **Typical workflow:** got a file to review → right-click → opens in Google Docs. No Word, no drag-and-drop.
 
@@ -63,6 +63,7 @@ Supported formats:
 | `.docx` | Google Docs |
 | `.xlsx` | Google Sheets |
 | `.pptx` | Google Slides |
+| `.pptm` | Google Slides |
 
 ---
 
@@ -81,7 +82,7 @@ done
 
 5. **File → Save** → name it `Open in Google Docs`
 
-Right-click any `.docx`, `.xlsx`, or `.pptx` in Finder → **Quick Actions → Open in Google Docs**.
+Right-click any `.docx`, `.xlsx`, `.pptx`, or `.pptm` in Finder → **Quick Actions → Open in Google Docs**.
 
 > If `which goodoc` doesn't work in Automator, replace it with the full path from `which goodoc` in your terminal (e.g. `/Users/you/.local/bin/goodoc`).
 

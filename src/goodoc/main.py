@@ -111,7 +111,7 @@ def upload(path: Path, creds: Credentials) -> str:
 
 @app.command()
 def main(
-    file: Path = typer.Argument(..., help="Path to file (.docx / .xlsx / .pptx)"),
+    file: Path = typer.Argument(..., help="Path to file (.docx / .xlsx / .pptx / .pptm)"),
     no_open: bool = typer.Option(False, "--no-open", help="Do not open in browser"),
 ) -> None:
     if not file.exists():

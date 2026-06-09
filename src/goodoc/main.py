@@ -6,6 +6,7 @@ Supported formats:
     .docx  → Google Docs
     .xlsx  → Google Sheets
     .pptx  → Google Slides
+    .pptm  → Google Slides
 
 Credentials: ~/.goodoc/credentials.json
 Token: ~/.goodoc/token.json
@@ -42,6 +43,10 @@ MIME_MAP = {
     ),
     ".pptx": (
         "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        "application/vnd.google-apps.presentation",
+    ),
+    ".pptm": (
+        "application/vnd.ms-powerpoint.presentation.macroEnabled.12",
         "application/vnd.google-apps.presentation",
     ),
 }
@@ -106,7 +111,7 @@ def upload(path: Path, creds: Credentials) -> str:
 
 @app.command()
 def main(
-    file: Path = typer.Argument(..., help="Path to file (.docx / .xlsx / .pptx)"),
+    file: Path = typer.Argument(..., help="Path to file (.docx / .xlsx / .pptx / .pptm)"),
     no_open: bool = typer.Option(False, "--no-open", help="Do not open in browser"),
 ) -> None:
     if not file.exists():

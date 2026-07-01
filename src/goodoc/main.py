@@ -1,107 +1,29 @@
-#!/usr/bin/env python3
-"""
-goodoc — uploads office files to Google Drive with conversion, opens in browser.
-
-Supported formats:
-    .docx  → Google Docs
-    .xlsx  → Google Sheets
-    .pptx  → Google Slides
-
-Credentials: ~/.goodoc/credentials.json
-Token: ~/.goodoc/token.json
-
-Usage:
-    goodoc file.docx
-    goodoc file.xlsx --no-open
-"""
-
+import webbrowser
+from dataclasses import dataclass, field
+from functools import cached_property
 from pathlib import Path
 
 import typer
-import webbrowser
-from google.auth.transport.requests import Request
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
-from googleapiclient.discovery import build
-from googleapiclient.http import MediaFileUpload
 
-SCOPES = ["https://www.googleapis.com/auth/drive.file"]
-
-GOODOC_DIR = Path.home() / ".goodoc"
-CREDENTIALS_PATH = GOODOC_DIR / "credentials.json"
-TOKEN_PATH = GOODOC_DIR / "token.json"
-
-MIME_MAP = {
-    ".docx": (
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        "application/vnd.google-apps.document",
-    ),
-    ".xlsx": (
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        "application/vnd.google-apps.spreadsheet",
-    ),
-    ".pptx": (
-        "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-        "application/vnd.google-apps.presentation",
-    ),
-}
+from goodoc.auth import get_credentials
+from goodoc.drive import upload
 
 app = typer.Typer(add_completion=False)
 
 
-def get_credentials() -> Credentials:
-    if not CREDENTIALS_PATH.exists():
-        typer.echo(f"credentials.json not found: {CREDENTIALS_PATH}", err=True)
-        typer.echo("Place your OAuth credentials from Google Cloud Console at ~/.goodoc/credentials.json", err=True)
+@dataclass(frozen=True)
+class Config:
+    goodoc_dir: Path = field(default_factory=lambda: Path.home() / ".goodoc")
+    workflow_path: Path = field(default_factory=lambda: Path.home() / "Library" / "Services" / "Open in Google Docs.workflow")
+    scopes: list[str] = field(default_factory=lambda: ["https://www.googleapis.com/auth/drive.file"])
 
-        raise typer.Exit(1)
+    @cached_property
+    def credentials_path(self) -> Path:
+        return self.goodoc_dir / "credentials.json"
 
-    TOKEN_PATH.parent.mkdir(parents=True, exist_ok=True)
-
-    creds = None
-
-    if TOKEN_PATH.exists():
-        creds = Credentials.from_authorized_user_file(str(TOKEN_PATH), SCOPES)
-
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(str(CREDENTIALS_PATH), SCOPES)
-            creds = flow.run_local_server(port=0)
-
-        with TOKEN_PATH.open("w") as f:
-            f.write(creds.to_json())
-
-    return creds
-
-
-def upload(path: Path, creds: Credentials) -> str:
-    suffix = path.suffix.lower()
-
-    if suffix not in MIME_MAP:
-        supported = ", ".join(MIME_MAP)
-        typer.echo(f"Unsupported format: {suffix}. Supported: {supported}", err=True)
-
-        raise typer.Exit(1)
-
-    source_mime, target_mime = MIME_MAP[suffix]
-
-    service = build("drive", "v3", credentials=creds)
-
-    media = MediaFileUpload(str(path), mimetype=source_mime, resumable=False)
-
-    result = (
-        service.files()
-        .create(
-            body={"name": path.stem, "mimeType": target_mime},
-            media_body=media,
-            fields="id,webViewLink",
-        )
-        .execute()
-    )
-
-    return result["webViewLink"]
+    @cached_property
+    def token_path(self) -> Path:
+        return self.goodoc_dir / "token.json"
 
 
 @app.command()
@@ -109,6 +31,7 @@ def main(
     file: Path = typer.Argument(..., help="Path to file (.docx / .xlsx / .pptx)"),
     no_open: bool = typer.Option(False, "--no-open", help="Do not open in browser"),
 ) -> None:
+    """Upload an office file to Google Drive and open it in the browser."""
     if not file.exists():
         typer.echo(f"File not found: {file}", err=True)
 
@@ -116,7 +39,8 @@ def main(
 
     typer.echo(f"Uploading {file.name}...")
 
-    creds = get_credentials()
+    config = Config()
+    creds = get_credentials(config)
     url = upload(file, creds)
 
     typer.echo(url)

@@ -22,4 +22,4 @@ dist/
 .idea/
 
 # tools
-cliff.toml
+cliff.toml.repokit

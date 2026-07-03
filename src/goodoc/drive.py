@@ -18,6 +18,10 @@ MIME_MAP = {
         "application/vnd.openxmlformats-officedocument.presentationml.presentation",
         "application/vnd.google-apps.presentation",
     ),
+    ".pptm": (
+        "application/vnd.ms-powerpoint.presentation.macroEnabled.12",
+        "application/vnd.google-apps.presentation",
+    ),
 }
 
 

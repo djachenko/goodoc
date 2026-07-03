@@ -7,48 +7,34 @@ on:
 
 jobs:
   release:
-    runs-on: ubuntu-latest
-    concurrency: release
+    uses: djachenko/repokit/.github/workflows/python-release.yml@0.9
+    secrets: inherit
     permissions:
-      id-token: write
       contents: write
 
+  publish:
+    needs: release
+    if: needs.release.outputs.released == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+
     steps:
-      - uses: actions/create-github-app-token@v1
-        id: app-token
+      - uses: actions/download-artifact@v8
         with:
-          app-id: ${{ secrets.APP_ID }}
-          private-key: ${{ secrets.APP_PRIVATE_KEY }}
-
-      - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-          token: ${{ steps.app-token.outputs.token }}
-
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.x"
-
-      - name: Python Semantic Release
-        id: release
-        uses: python-semantic-release/python-semantic-release@master
-        with:
-          github_token: ${{ steps.app-token.outputs.token }}
+          name: dist
+          path: dist/
 
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
-        if: steps.release.outputs.released == 'true'
 
-      - name: Smoke test (PyPI)
-        if: steps.release.outputs.released == 'true'
+      - name: Smoke test
         run: |
-          VERSION=${{ steps.release.outputs.version }}
-
+          PACKAGE=$(ls dist/*.whl | head -1 | xargs basename | sed 's/-[0-9].*//')
+          VERSION=$(ls dist/*.tar.gz | sed 's/.*-\(.*\)\.tar\.gz/\1/')
           for i in {1..5}; do
-            pip install goodoc==$VERSION && break
+            pip install $PACKAGE==$VERSION && break
             echo "Attempt $i failed, retrying in 10s..."
             sleep 10
           done
-
-          goodoc --help
+          python -c "import $PACKAGE"

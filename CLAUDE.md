@@ -32,8 +32,9 @@ Credentials хранит в `~/.goodoc/credentials.json`, токен там же
 | `.docx` | Google Docs |
 | `.xlsx` | Google Sheets |
 | `.pptx` | Google Slides |
+| `.pptm` | Google Slides |
 
-Добавление нового формата — одна строка в `MIME_MAP` в `goodoc/main.py`.
+Добавление нового формата — одна строка в `MIME_MAP` в `src/goodoc/main.py`.
 
 ---
 
@@ -43,9 +44,10 @@ Credentials хранит в `~/.goodoc/credentials.json`, токен там же
 goodoc/
 ├── CLAUDE.md
 ├── pyproject.toml
-└── goodoc/
-    ├── __init__.py
-    └── main.py          # вся логика: OAuth, upload, CLI-команда
+└── src/
+    └── goodoc/
+        ├── __init__.py
+        └── main.py          # вся логика: OAuth, upload, CLI-команда
 ```
 
 ---

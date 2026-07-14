@@ -30,9 +30,9 @@ Supported formats:
 curl -fsSL https://raw.githubusercontent.com/djachenko/goodoc/master/install.sh | bash
 ```
 
-Installs goodoc and adds `goodoc-update` / `goodoc-uninstall` to your shell.
+Installs goodoc, the Finder Quick Action, and adds `goodoc-update` / `goodoc-uninstall` to your shell.
 
-Alternatively, with pipx only (no shell helpers):
+Alternatively, CLI only (no Quick Action or shell helpers):
 
 ```bash
 pipx install git+https://github.com/djachenko/goodoc.git
@@ -46,9 +46,10 @@ On the first run, a setup wizard starts automatically:
 
 1. **Google Cloud credentials** — opens the browser, walks you through creating an OAuth client, prompts for the downloaded JSON file
 2. **Authorization** — opens the browser for Google sign-in, saves the token
-3. **Finder Quick Action** — installs "Open in Google Docs" to the right-click menu, opens System Settings to enable it
 
 After that, every run is silent.
+
+Enable the Quick Action in: System Settings → Privacy & Security → Extensions → Finder Extensions.
 
 ---
 
@@ -62,7 +63,7 @@ goodoc-uninstall   # remove goodoc, the Quick Action, and credentials
 To re-authorize without uninstalling:
 
 ```bash
-rm ~/.goodoc/token.json
+rm ~/.config/goodoc/token.json
 ```
 
 ---

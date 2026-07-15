@@ -28,24 +28,24 @@ class Config:
 
 @app.command()
 def main(
-    file: Path = typer.Argument(..., help="Path to file (.docx / .xlsx / .pptx / .pptm)"),
+    files: list[Path] = typer.Argument(..., help="Paths to files (.docx / .xlsx / .pptx / .pptm)"),
     no_open: bool = typer.Option(False, "--no-open", help="Do not open in browser"),
 ) -> None:
-    """Upload an office file to Google Drive and open it in the browser."""
-    if not file.exists():
-        typer.echo(f"File not found: {file}", err=True)
-        raise typer.Exit(1)
-
-    typer.echo(f"Uploading {file.name}...")
-
+    """Upload office files to Google Drive and open them in the browser."""
     config = Config()
     creds = get_credentials(config)
-    url = upload(file, creds)
 
-    typer.echo(url)
+    for file in files:
+        if not file.exists():
+            typer.echo(f"File not found: {file}", err=True)
+            raise typer.Exit(1)
 
-    if not no_open:
-        webbrowser.open(url)
+        typer.echo(f"Uploading {file.name}...")
+        url = upload(file, creds)
+        typer.echo(url)
+
+        if not no_open:
+            webbrowser.open(url)
 
 
 if __name__ == "__main__":

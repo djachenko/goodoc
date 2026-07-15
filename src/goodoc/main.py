@@ -38,6 +38,7 @@ def main(
     for file in files:
         if not file.exists():
             typer.echo(f"File not found: {file}", err=True)
+
             raise typer.Exit(1)
 
         typer.echo(f"Uploading {file.name}...")

@@ -1,3 +1,4 @@
+import os
 import webbrowser
 from dataclasses import dataclass, field
 from functools import cached_property
@@ -13,8 +14,7 @@ app = typer.Typer(add_completion=False)
 
 @dataclass(frozen=True)
 class Config:
-    goodoc_dir: Path = field(default_factory=lambda: Path.home() / ".goodoc")
-    workflow_path: Path = field(default_factory=lambda: Path.home() / "Library" / "Services" / "Open in Google Docs.workflow")
+    goodoc_dir: Path = field(default_factory=lambda: Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config")) / "goodoc")
     scopes: list[str] = field(default_factory=lambda: ["https://www.googleapis.com/auth/drive.file"])
 
     @cached_property
@@ -34,7 +34,6 @@ def main(
     """Upload an office file to Google Drive and open it in the browser."""
     if not file.exists():
         typer.echo(f"File not found: {file}", err=True)
-
         raise typer.Exit(1)
 
     typer.echo(f"Uploading {file.name}...")

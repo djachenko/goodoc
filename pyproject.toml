@@ -54,3 +54,4 @@ branch = "master"
 build_command = "pip install build && python -m build"
 changelog_file = "CHANGELOG.md"
 commit_message = "chore(release): v{version} [skip ci]"
+major_on_zero = false

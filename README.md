@@ -9,8 +9,9 @@ Upload `.docx`, `.xlsx`, `.pptx`, and `.pptm` files to Google Drive with automat
 ## Usage
 
 ```bash
-goodoc file.docx           # upload and open in browser
-goodoc file.xlsx --no-open # upload without opening
+goodoc file.docx                    # upload and open in browser
+goodoc file.xlsx --no-open          # upload without opening
+goodoc file.docx file.xlsx file.pptx  # upload multiple files
 ```
 
 Supported formats:

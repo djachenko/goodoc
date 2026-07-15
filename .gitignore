@@ -22,6 +22,5 @@ dist/
 .idea/
 
 # tools
-cliff.toml
 .repokit
 CLAUDE.local.md

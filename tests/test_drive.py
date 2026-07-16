@@ -13,9 +13,11 @@ class TestMimeMap:
     ])
     def test_extensions_map_to_google_formats(self, extension, expected_target):
         _, target_mime = MIME_MAP[extension]
+
         assert target_mime == expected_target
 
 
+@pytest.mark.usefixtures("mock_drive_build")
 class TestUpload:
     def test_unsupported_extension_exits(self, tmp_path, mock_creds):
         file = tmp_path / "doc.pdf"
@@ -27,7 +29,7 @@ class TestUpload:
         assert exc_info.value.exit_code == 1
 
     @pytest.mark.parametrize("extension", MIME_MAP.keys())
-    def test_supported_extension_returns_url(self, extension, tmp_path, mock_creds, mock_drive_build):
+    def test_supported_extension_returns_url(self, extension, tmp_path, mock_creds):
         file = tmp_path / f"doc{extension}"
         file.touch()
 
@@ -36,7 +38,7 @@ class TestUpload:
         assert url == "https://docs.google.com/doc"
 
     @pytest.mark.parametrize("filename", ["DOC.DOCX", "Doc.Docx", "sheet.XLSX"])
-    def test_uppercase_extension_accepted(self, filename, tmp_path, mock_creds, mock_drive_build):
+    def test_uppercase_extension_accepted(self, filename, tmp_path, mock_creds):
         file = tmp_path / filename
         file.touch()
 
@@ -49,5 +51,6 @@ class TestUpload:
         upload(file, mock_creds)
 
         _, kwargs = mock_drive_build.files.return_value.create.call_args
+
         assert kwargs["body"]["name"] == "report"
         assert kwargs["body"]["mimeType"] == "application/vnd.google-apps.document"

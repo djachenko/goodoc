@@ -6,6 +6,7 @@ from goodoc.main import app
 class TestCLI:
     def test_file_not_found(self, runner, mock_get_credentials, mock_upload):
         result = runner.invoke(app, ["nonexistent.docx"])
+
         assert result.exit_code == 1
         assert "File not found" in result.output
 
@@ -37,6 +38,7 @@ class TestCLI:
     @pytest.mark.parametrize("count", [1, 2, 3, 5])
     def test_multiple_files_all_uploaded(self, runner, tmp_path, mock_get_credentials, mock_upload, mock_browser, count):
         files = [tmp_path / f"doc{i}.docx" for i in range(count)]
+
         for f in files:
             f.touch()
 
@@ -49,6 +51,7 @@ class TestCLI:
     def test_credentials_fetched_once(self, runner, tmp_path, mock_get_credentials, mock_upload, mock_browser, count):
         """get_credentials вызывается один раз независимо от числа файлов."""
         files = [tmp_path / f"doc{i}.docx" for i in range(count)]
+
         for f in files:
             f.touch()
 

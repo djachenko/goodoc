@@ -1,16 +1,12 @@
-from __future__ import annotations
-
 import shutil
 import webbrowser
 from pathlib import Path
-from typing import TYPE_CHECKING
 
 import typer
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 
-if TYPE_CHECKING:
-    from goodoc.main import Config
+from goodoc.config import Config
 
 
 def acquire_credentials(config: Config) -> None:
@@ -25,13 +21,18 @@ def acquire_credentials(config: Config) -> None:
     typer.echo("       Application type: Desktop app")
     typer.echo("  5. Download the JSON file")
     typer.echo()
+
     typer.echo("Opening Google Cloud Console in browser...")
     webbrowser.open("https://console.cloud.google.com/apis/credentials")
     typer.echo()
 
     downloads = Path.home() / "Downloads"
     suggestions = sorted(downloads.glob("client_secret_*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
-    hint = f" [{suggestions[0]}]" if suggestions else ""
+
+    if suggestions:
+        hint = f" [{suggestions[0]}]"
+    else:
+        hint = ""
 
     raw = typer.prompt(f"Path to downloaded credentials JSON{hint}").strip()
 
@@ -41,10 +42,12 @@ def acquire_credentials(config: Config) -> None:
         src = suggestions[0]
     else:
         typer.echo("No path provided.", err=True)
+
         raise typer.Exit(1)
 
     if not src.exists():
         typer.echo(f"File not found: {src}", err=True)
+
         raise typer.Exit(1)
 
     config.goodoc_dir.mkdir(parents=True, exist_ok=True)
@@ -62,6 +65,7 @@ def authorize(config: Config) -> Credentials:
     creds = flow.run_local_server(port=0)
 
     config.token_path.parent.mkdir(parents=True, exist_ok=True)
+
     with config.token_path.open("w") as f:
         f.write(creds.to_json())
 

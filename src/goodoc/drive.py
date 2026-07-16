@@ -42,7 +42,10 @@ def upload(path: Path, creds: Credentials) -> str:
     result = (
         service.files()
         .create(
-            body={"name": path.stem, "mimeType": target_mime},
+            body={
+                "name": path.stem,
+                "mimeType": target_mime,
+            },
             media_body=media,
             fields="id,webViewLink",
         )

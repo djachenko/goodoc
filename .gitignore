@@ -14,6 +14,8 @@ dist/
 
 # claude internal
 .claude/
+_claude
+to_delete/
 
 # macOS
 .DS_Store

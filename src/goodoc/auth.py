@@ -1,15 +1,9 @@
-from __future__ import annotations
-
-from typing import TYPE_CHECKING
-
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 
+from goodoc.config import Config
 from goodoc.setup import first_run_wizard
-
-if TYPE_CHECKING:
-    from goodoc.main import Config
 
 
 def get_credentials(config: Config) -> Credentials:

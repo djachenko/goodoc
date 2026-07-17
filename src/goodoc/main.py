@@ -5,7 +5,7 @@ import typer
 
 from goodoc.auth import get_credentials
 from goodoc.config import Config
-from goodoc.drive import upload
+from goodoc.drive import MIME_MAP, upload
 
 app = typer.Typer()
 
@@ -17,7 +17,6 @@ def main(
 ) -> None:
     """Upload office files to Google Drive and open them in the browser."""
     config = Config.default()
-    creds = get_credentials(config)
 
     for file in files:
         if not file.exists():
@@ -25,6 +24,15 @@ def main(
 
             raise typer.Exit(1)
 
+        if file.suffix.lower() not in MIME_MAP:
+            supported = ", ".join(MIME_MAP)
+            typer.echo(f"Unsupported format: {file.suffix}. Supported: {supported}", err=True)
+
+            raise typer.Exit(1)
+
+    creds = get_credentials(config)
+
+    for file in files:
         typer.echo(f"Uploading {file.name}...")
         url = upload(file, creds)
         typer.echo(url)

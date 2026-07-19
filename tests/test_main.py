@@ -1,42 +1,28 @@
 from pathlib import Path
 
 import pytest
-import typer
 
-from goodoc.main import app, validate
+from goodoc.main import app, validate_file
 
 
-class TestValidate:
-    def test_passes_on_valid_files(self, tmp_path):
-        files = [tmp_path / "a.docx", tmp_path / "b.xlsx"]
+class TestValidateFile:
+    def test_returns_none_on_valid_file(self, tmp_path):
+        file = tmp_path / "doc.docx"
+        file.touch()
 
-        for f in files:
-            f.touch()
+        assert validate_file(file) is None
 
-        validate(files)
+    def test_returns_error_on_missing_file(self):
+        assert validate_file(Path("missing.docx")) is not None
 
-    def test_raises_on_missing_file(self, tmp_path):
-        existing = tmp_path / "doc.docx"
-        existing.touch()
+    def test_returns_error_on_unsupported_format(self, tmp_path):
+        file = tmp_path / "data.txt"
+        file.touch()
 
-        with pytest.raises(typer.Exit):
-            validate([Path("missing.docx"), existing])
+        assert validate_file(file) is not None
 
-    def test_raises_on_unsupported_format(self, tmp_path):
-        valid = tmp_path / "doc.docx"
-        invalid = tmp_path / "data.txt"
-        valid.touch()
-        invalid.touch()
-
-        with pytest.raises(typer.Exit):
-            validate([valid, invalid])
-
-    def test_missing_checked_before_format(self, tmp_path):
-        existing_invalid = tmp_path / "data.txt"
-        existing_invalid.touch()
-
-        with pytest.raises(typer.Exit):
-            validate([Path("missing.docx"), existing_invalid])
+    def test_missing_takes_priority_over_format(self):
+        assert validate_file(Path("missing.txt")) is not None
 
 
 class TestCLI:

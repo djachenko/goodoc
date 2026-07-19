@@ -10,18 +10,15 @@ from goodoc.drive import MIME_MAP, upload
 app = typer.Typer()
 
 
-def validate(files: list[Path]) -> None:
-    for file in files:
-        if not file.exists():
-            typer.echo(f"File not found: {file}", err=True)
+def validate_file(file: Path) -> str | None:
+    if not file.exists():
+        return f"File not found: {file}"
 
-            raise typer.Exit(1)
+    if file.suffix.lower() not in MIME_MAP:
+        supported = ", ".join(MIME_MAP)
+        return f"Unsupported format: {file.suffix}. Supported: {supported}"
 
-        if file.suffix.lower() not in MIME_MAP:
-            supported = ", ".join(MIME_MAP)
-            typer.echo(f"Unsupported format: {file.suffix}. Supported: {supported}", err=True)
-
-            raise typer.Exit(1)
+    return None
 
 
 @app.command()
@@ -32,7 +29,11 @@ def main(
     """Upload office files to Google Drive and open them in the browser."""
     config = Config.default()
 
-    validate(files)
+    for file in files:
+        if error := validate_file(file):
+            typer.echo(error, err=True)
+
+            raise typer.Exit(1)
 
     creds = get_credentials(config)
 

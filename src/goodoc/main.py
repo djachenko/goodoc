@@ -17,7 +17,6 @@ def main(
 ) -> None:
     """Upload office files to Google Drive and open them in the browser."""
     config = Config.default()
-    creds = get_credentials(config)
 
     for file in files:
         if not file.exists():
@@ -25,6 +24,9 @@ def main(
 
             raise typer.Exit(1)
 
+    creds = get_credentials(config)
+
+    for file in files:
         typer.echo(f"Uploading {file.name}...")
         url = upload(file, creds)
         typer.echo(url)

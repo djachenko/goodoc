@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.3.2 (2026-07-19)
+
+### Bug Fixes
+
+- Validate file existence before OAuth
+  ([`c9ec411`](https://github.com/djachenko/goodoc/commit/c9ec4114eccbbc2e8a29b72504b6f56451f59f9a))
+
+
 ## v1.3.1 (2026-07-16)
 
 ### Bug Fixes

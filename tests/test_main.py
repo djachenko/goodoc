@@ -1,6 +1,42 @@
-import pytest
+from pathlib import Path
 
-from goodoc.main import app
+import pytest
+import typer
+
+from goodoc.main import app, validate
+
+
+class TestValidate:
+    def test_passes_on_valid_files(self, tmp_path):
+        files = [tmp_path / "a.docx", tmp_path / "b.xlsx"]
+
+        for f in files:
+            f.touch()
+
+        validate(files)
+
+    def test_raises_on_missing_file(self, tmp_path):
+        existing = tmp_path / "doc.docx"
+        existing.touch()
+
+        with pytest.raises(typer.Exit):
+            validate([Path("missing.docx"), existing])
+
+    def test_raises_on_unsupported_format(self, tmp_path):
+        valid = tmp_path / "doc.docx"
+        invalid = tmp_path / "data.txt"
+        valid.touch()
+        invalid.touch()
+
+        with pytest.raises(typer.Exit):
+            validate([valid, invalid])
+
+    def test_missing_checked_before_format(self, tmp_path):
+        existing_invalid = tmp_path / "data.txt"
+        existing_invalid.touch()
+
+        with pytest.raises(typer.Exit):
+            validate([Path("missing.docx"), existing_invalid])
 
 
 class TestCLI:

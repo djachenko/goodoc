@@ -77,3 +77,4 @@ class TestCLI:
 
         assert result.exit_code == 1
         mock_upload.assert_not_called()
+        mock_get_credentials.assert_not_called()

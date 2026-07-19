@@ -12,7 +12,9 @@ MISSING_INVALID_NAME = "missing.txt"
 
 class TestValidateFile:
     def test_returns_none_on_valid_file(self, tmp_path, create_files):
-        create_files(tmp_path, {VALID_NAME: None})
+        create_files(tmp_path, {
+            VALID_NAME: None,
+        })
 
         assert validate_file(tmp_path / VALID_NAME) is None
 
@@ -20,7 +22,9 @@ class TestValidateFile:
         assert validate_file(Path(MISSING_NAME)) is not None
 
     def test_returns_error_on_unsupported_format(self, tmp_path, create_files):
-        create_files(tmp_path, {INVALID_NAME: None})
+        create_files(tmp_path, {
+            INVALID_NAME: None,
+        })
 
         assert validate_file(tmp_path / INVALID_NAME) is not None
 
@@ -36,7 +40,9 @@ class TestCLI:
         assert "File not found" in result.output
 
     def test_single_file_uploads(self, runner, tmp_path, create_files, mock_get_credentials, mock_upload, mock_browser):
-        create_files(tmp_path, {VALID_NAME: None})
+        create_files(tmp_path, {
+            VALID_NAME: None,
+        })
 
         result = runner.invoke(app, [str(tmp_path / VALID_NAME)])
 
@@ -44,14 +50,18 @@ class TestCLI:
         mock_upload.assert_called_once()
 
     def test_url_printed(self, runner, tmp_path, create_files, mock_get_credentials, mock_upload, mock_browser):
-        create_files(tmp_path, {VALID_NAME: None})
+        create_files(tmp_path, {
+            VALID_NAME: None,
+        })
 
         result = runner.invoke(app, [str(tmp_path / VALID_NAME)])
 
         assert "https://docs.google.com/doc" in result.output
 
     def test_browser_opened(self, runner, tmp_path, create_files, mock_get_credentials, mock_upload, mock_browser):
-        create_files(tmp_path, {VALID_NAME: None})
+        create_files(tmp_path, {
+            VALID_NAME: None,
+        })
 
         runner.invoke(app, [str(tmp_path / VALID_NAME)])
 
@@ -98,7 +108,9 @@ class TestCLI:
         mock_get_credentials.assert_called_once()
 
     def test_no_open_skips_browser(self, runner, tmp_path, create_files, mock_get_credentials, mock_upload, mock_browser):
-        create_files(tmp_path, {VALID_NAME: None})
+        create_files(tmp_path, {
+            VALID_NAME: None,
+        })
 
         result = runner.invoke(app, [str(tmp_path / VALID_NAME), "--no-open"])
 
@@ -107,7 +119,9 @@ class TestCLI:
 
     def test_stops_on_first_missing_file(self, runner, tmp_path, create_files, mock_get_credentials, mock_upload, mock_browser):
         """При отсутствующем файле не загружает следующие."""
-        create_files(tmp_path, {VALID_NAME: None})
+        create_files(tmp_path, {
+            VALID_NAME: None,
+        })
 
         result = runner.invoke(app, [MISSING_NAME, str(tmp_path / VALID_NAME)])
 

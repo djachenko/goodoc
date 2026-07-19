@@ -78,3 +78,14 @@ class TestCLI:
         assert result.exit_code == 1
         mock_upload.assert_not_called()
         mock_get_credentials.assert_not_called()
+
+    def test_no_auth_on_unsupported_format(self, runner, tmp_path, mock_get_credentials, mock_upload):
+        valid = tmp_path / "doc.docx"
+        invalid = tmp_path / "data.txt"
+        valid.touch()
+        invalid.touch()
+
+        result = runner.invoke(app, [str(valid), str(invalid)])
+
+        assert result.exit_code == 1
+        mock_get_credentials.assert_not_called()

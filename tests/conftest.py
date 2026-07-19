@@ -10,11 +10,13 @@ def create_files():
     def _create(root: Path, structure: dict):
         for key, value in structure.items():
             path = root / key
+
             if value is None:
                 path.touch()
-            if isinstance(value, dict):
+            elif isinstance(value, dict):
                 path.mkdir(parents=True, exist_ok=True)
                 _create(path, value)
+
     return _create
 
 

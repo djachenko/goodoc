@@ -5,9 +5,20 @@ import typer
 
 from goodoc.auth import get_credentials
 from goodoc.config import Config
-from goodoc.drive import upload
+from goodoc.drive import MIME_MAP, upload
 
 app = typer.Typer()
+
+
+def validate_file(file: Path) -> str | None:
+    if not file.exists():
+        return f"File not found: {file}"
+
+    if file.suffix.lower() not in MIME_MAP:
+        supported = ", ".join(MIME_MAP)
+        return f"Unsupported format: {file.suffix}. Supported: {supported}"
+
+    return None
 
 
 @app.command()
@@ -19,8 +30,8 @@ def main(
     config = Config.default()
 
     for file in files:
-        if not file.exists():
-            typer.echo(f"File not found: {file}", err=True)
+        if error := validate_file(file):
+            typer.echo(error, err=True)
 
             raise typer.Exit(1)
 

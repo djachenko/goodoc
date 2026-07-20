@@ -2,6 +2,42 @@
 
 <!-- version list -->
 
+## v1.4.0 (2026-07-20)
+
+### Code Style
+
+- Extract filename constants, format long signatures
+  ([`198449c`](https://github.com/djachenko/goodoc/commit/198449c51fdaa6ff47eab945c8227838174b7d0d))
+
+- Extract method-level locals for repeated values
+  ([`ff4b24e`](https://github.com/djachenko/goodoc/commit/ff4b24ea683d7df9a4baa95240f3ad470663c433))
+
+- Inline filenames, remove module-level constants
+  ([`ea606cb`](https://github.com/djachenko/goodoc/commit/ea606cb57ca6248124b976bd6e23ff45b99967b6))
+
+- Multiline dict for all create_files calls
+  ([`733d84c`](https://github.com/djachenko/goodoc/commit/733d84ca4082d9ed5acc913d280edbf4b90a0553))
+
+- Vertical spacing and elif in create_files
+  ([`d0369b1`](https://github.com/djachenko/goodoc/commit/d0369b16d3e4c5cd2170721231b7705740b9cc73))
+
+### Features
+
+- Validate file format before OAuth
+  ([`e465c4b`](https://github.com/djachenko/goodoc/commit/e465c4b30e80876c7ad16f826077bb27d4277c45))
+
+### Refactoring
+
+- Extract validate() and add unit tests
+  ([`9f084cf`](https://github.com/djachenko/goodoc/commit/9f084cf192e1f8ad24c909666aad2791de1f19bf))
+
+- Extract validate_file() and add unit tests
+  ([`fd83f03`](https://github.com/djachenko/goodoc/commit/fd83f039c9395ada18e4c970f236ce89f86589a2))
+
+- Use create_files fixture for file setup in tests
+  ([`0cef640`](https://github.com/djachenko/goodoc/commit/0cef64076d9d0a1d6a5d9172aeba86c4350edd66))
+
+
 ## v1.3.2 (2026-07-19)
 
 ### Bug Fixes

@@ -1,5 +1,10 @@
 # goodoc
 
+![CI](https://github.com/djachenko/goodoc/actions/workflows/tests.yml/badge.svg)
+[![PyPI](https://img.shields.io/pypi/v/goodoc.svg)](https://pypi.org/project/goodoc/)
+![Python](https://img.shields.io/pypi/pyversions/goodoc.svg)
+![License](https://img.shields.io/github/license/djachenko/goodoc.svg)
+
 Upload `.docx`, `.xlsx`, `.pptx`, and `.pptm` files to Google Drive with automatic conversion to native Google formats (Docs / Sheets / Slides). Integrates into macOS Finder as a right-click action.
 
 **Typical workflow:** got a file to review → right-click → opens in Google Docs. No Word, no drag-and-drop.

@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.4.2 (2026-07-21)
+
+### Bug Fixes
+
+- Use which to detect install vs upgrade
+  ([`cac44d3`](https://github.com/djachenko/goodoc/commit/cac44d3d7a2ffb6649196d735f1c9390d2da64b9))
+
+
 ## v1.4.1 (2026-07-21)
 
 ### Bug Fixes

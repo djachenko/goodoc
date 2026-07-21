@@ -29,12 +29,11 @@ Credentials хранит в `~/.config/goodoc/credentials.json`, токен та
 
 | Расширение | Google-формат |
 |---|---|
-| `.docx` | Google Docs |
-| `.xlsx` | Google Sheets |
-| `.pptx` | Google Slides |
-| `.pptm` | Google Slides |
+| `.doc`, `.docx` | Google Docs |
+| `.xls`, `.xlsx` | Google Sheets |
+| `.ppt`, `.pptx`, `.pptm` | Google Slides |
 
-Добавление нового формата — одна строка в `MIME_MAP` в `src/goodoc/main.py`.
+Добавление нового формата — одна строка в `MIME_MAP` в `src/goodoc/drive.py`.
 
 ---
 

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "goodoc"
-version = "1.4.2"
+version = "1.5.0"
 description = "Upload office files to Google Drive with auto-conversion to Docs/Sheets/Slides"
 readme = "README.md"
 license = "MIT"

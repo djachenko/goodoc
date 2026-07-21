@@ -2,6 +2,19 @@
 
 <!-- version list -->
 
+## v1.5.0 (2026-07-21)
+
+### Code Style
+
+- Add breathing whitespace
+  ([`0a1d1be`](https://github.com/djachenko/goodoc/commit/0a1d1be94a9f73a7f7c05df6d00702dabd0db989))
+
+### Features
+
+- Add legacy Office format support (.doc, .xls, .ppt)
+  ([`8941b3f`](https://github.com/djachenko/goodoc/commit/8941b3f21efcb17ca1fdf57c3069679137940fa6))
+
+
 ## v1.4.2 (2026-07-21)
 
 ### Bug Fixes

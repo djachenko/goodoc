@@ -6,13 +6,25 @@ from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 
 MIME_MAP = {
+    ".doc": (
+        "application/msword",
+        "application/vnd.google-apps.document",
+    ),
     ".docx": (
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         "application/vnd.google-apps.document",
     ),
+    ".xls": (
+        "application/vnd.ms-excel",
+        "application/vnd.google-apps.spreadsheet",
+    ),
     ".xlsx": (
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         "application/vnd.google-apps.spreadsheet",
+    ),
+    ".ppt": (
+        "application/vnd.ms-powerpoint",
+        "application/vnd.google-apps.presentation",
     ),
     ".pptx": (
         "application/vnd.openxmlformats-officedocument.presentationml.presentation",

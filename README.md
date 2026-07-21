@@ -5,7 +5,7 @@
 ![Python](https://img.shields.io/pypi/pyversions/goodoc.svg)
 ![License](https://img.shields.io/github/license/djachenko/goodoc.svg)
 
-Upload `.docx`, `.xlsx`, `.pptx`, and `.pptm` files to Google Drive with automatic conversion to native Google formats (Docs / Sheets / Slides). Integrates into macOS Finder as a right-click action.
+Upload Office files to Google Drive with automatic conversion to native Google formats (Docs / Sheets / Slides). Integrates into macOS Finder as a right-click action.
 
 **Typical workflow:** got a file to review → right-click → opens in Google Docs. No Word, no drag-and-drop.
 
@@ -23,10 +23,9 @@ Supported formats:
 
 | Extension | Converts to |
 |---|---|
-| `.docx` | Google Docs |
-| `.xlsx` | Google Sheets |
-| `.pptx` | Google Slides |
-| `.pptm` | Google Slides |
+| `.doc`, `.docx` | Google Docs |
+| `.xls`, `.xlsx` | Google Sheets |
+| `.ppt`, `.pptx`, `.pptm` | Google Slides |
 
 ---
 

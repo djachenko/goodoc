@@ -23,7 +23,7 @@ def validate_file(file: Path) -> str | None:
 
 @app.command()
 def main(
-        files: list[Path] = typer.Argument(..., help="Paths to files (.docx / .xlsx / .pptx / .pptm)"),
+        files: list[Path] = typer.Argument(..., help=f"Paths to files ({' / '.join(MIME_MAP)})"),
         no_open: bool = typer.Option(False, "--no-open", help="Do not open in browser"),
 ) -> None:
     """Upload office files to Google Drive and open them in the browser."""
@@ -39,6 +39,7 @@ def main(
 
     for file in files:
         typer.echo(f"Uploading {file.name}...")
+
         url = upload(file, creds)
         typer.echo(url)
 

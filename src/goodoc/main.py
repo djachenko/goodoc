@@ -39,6 +39,7 @@ def main(
 
     for file in files:
         typer.echo(f"Uploading {file.name}...")
+
         url = upload(file, creds)
         typer.echo(url)
 

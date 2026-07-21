@@ -78,6 +78,7 @@ def authorize(config: Config) -> Credentials:
 def first_run_wizard(config: Config) -> Credentials:
     if not sys.stdin.isatty():
         typer.echo("goodoc is not configured. Run 'goodoc <file>' from Terminal first.", err=True)
+
         raise typer.Exit(1)
 
     typer.echo("First run — let's set up goodoc.")

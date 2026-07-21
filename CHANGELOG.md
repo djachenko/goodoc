@@ -2,6 +2,28 @@
 
 <!-- version list -->
 
+## v1.4.1 (2026-07-21)
+
+### Bug Fixes
+
+- Install from PyPI with --force instead of git URL
+  ([`c235975`](https://github.com/djachenko/goodoc/commit/c2359758d40c021b9ec1909e290a5b09326a488c))
+
+- Reinstall on update by passing --force to pipx, remove outdated Quick Action path
+  ([`ce35dee`](https://github.com/djachenko/goodoc/commit/ce35dee797b9d6b1f054bcefa76e1ba9583ef669))
+
+- Show message instead of aborting when run without TTY
+  ([`a252fff`](https://github.com/djachenko/goodoc/commit/a252fff3b8b619b4d28d4771b833ec51da3511a0))
+
+- Workflow metadata and input type for Finder compatibility
+  ([`8993c7d`](https://github.com/djachenko/goodoc/commit/8993c7db6f5e11d9b3d5db9b09c63332d8ccb400))
+
+### Documentation
+
+- Add status badges to README
+  ([`9cf5164`](https://github.com/djachenko/goodoc/commit/9cf5164eb4ad276a9a91f56a881762fceb7327d1))
+
+
 ## v1.4.0 (2026-07-20)
 
 ### Code Style

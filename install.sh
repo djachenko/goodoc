@@ -8,7 +8,7 @@ SHELL_RC="$HOME/.zshrc"
 SHELL_FILE="${XDG_DATA_HOME:-$HOME/.local/share}/goodoc/shell.sh"
 
 echo "Installing goodoc..."
-pipx install "git+https://github.com/$REPO"
+pipx install --force goodoc
 
 # Install Finder Quick Action
 echo "Installing Finder Quick Action..."
@@ -61,5 +61,4 @@ if line.strip() not in t:
 " 2>/dev/null || true
 
 echo "Done. Restart shell or: source $SHELL_RC"
-echo "Enable Quick Action: System Settings → Privacy & Security → Extensions → Finder Extensions"
 echo "Run 'goodoc <file.docx>' to get started — auth wizard will run on first use."

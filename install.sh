@@ -8,7 +8,7 @@ SHELL_RC="$HOME/.zshrc"
 SHELL_FILE="${XDG_DATA_HOME:-$HOME/.local/share}/goodoc/shell.sh"
 
 echo "Installing goodoc..."
-pipx install --force "git+https://github.com/$REPO"
+pipx install --force goodoc
 
 # Install Finder Quick Action
 echo "Installing Finder Quick Action..."

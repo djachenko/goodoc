@@ -8,7 +8,12 @@ SHELL_RC="$HOME/.zshrc"
 SHELL_FILE="${XDG_DATA_HOME:-$HOME/.local/share}/goodoc/shell.sh"
 
 echo "Installing goodoc..."
-pipx upgrade goodoc || pipx install goodoc
+# upgrade if already installed, install otherwise
+if pipx list --short 2>/dev/null | grep -q '^goodoc '; then
+    pipx upgrade goodoc
+else
+    pipx install goodoc
+fi
 
 # Install Finder Quick Action
 echo "Installing Finder Quick Action..."

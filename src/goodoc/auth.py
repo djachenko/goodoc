@@ -11,14 +11,14 @@ from goodoc.setup import Setup
 
 class Auth:
     def __init__(self, config: Config, setup: Setup) -> None:
-        self.config = config
+        self._config = config
         self._setup = setup
 
     def get_credentials(self) -> Credentials:
         creds = None
 
-        if self.config.token_path.exists():
-            creds = Credentials.from_authorized_user_file(str(self.config.token_path), self.config.scopes)
+        if self._config.token_path.exists():
+            creds = Credentials.from_authorized_user_file(str(self._config.token_path), self._config.scopes)
 
         if not creds or not creds.valid:
             if creds and creds.expired and creds.refresh_token:
@@ -40,15 +40,15 @@ class Auth:
         return creds
 
     def _authorize(self) -> Credentials:
-        if self.config.credentials_path.exists():
-            flow = InstalledAppFlow.from_client_secrets_file(str(self.config.credentials_path), self.config.scopes)
+        if self._config.credentials_path.exists():
+            flow = InstalledAppFlow.from_client_secrets_file(str(self._config.credentials_path), self._config.scopes)
 
             return flow.run_local_server(port=0)
 
         return self._setup.first_run_wizard()
 
     def _save(self, creds: Credentials) -> None:
-        self.config.token_path.parent.mkdir(parents=True, exist_ok=True)
+        self._config.token_path.parent.mkdir(parents=True, exist_ok=True)
 
-        with self.config.token_path.open("w") as f:
+        with self._config.token_path.open("w") as f:
             f.write(creds.to_json())

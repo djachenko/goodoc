@@ -51,12 +51,13 @@ goodoc/
 └── src/
     └── goodoc/
         ├── __init__.py
-        ├── main.py          # CLI: upload (по умолчанию) / login / logout
+        ├── main.py          # CLI: тонкий слой Typer, делегирует в App
+        ├── app.py           # App — точка сборки, бизнес-логика команд
         ├── config.py        # пути и scopes
-        ├── auth.py          # Auth — получение и обновление токена
+        ├── auth.py          # Auth(config, setup) — токен, OAuth flow
         ├── client.py        # встроенный OAuth-клиент автора + хеш ключа доступа
-        ├── drive.py         # загрузка в Drive
-        └── setup.py         # визард первого запуска (свой Cloud-проект)
+        ├── drive.py         # Drive(auth) — загрузка в Google Drive
+        └── setup.py         # Setup(config) — визард первого запуска
 ```
 
 ---

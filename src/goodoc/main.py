@@ -1,13 +1,14 @@
-import webbrowser
 from pathlib import Path
 from typing import Any
 
 import typer
 from typer.core import TyperGroup
 
+from goodoc.app import App
 from goodoc.auth import Auth
 from goodoc.config import Config
-from goodoc.drive import MIME_MAP, upload
+from goodoc.drive import MIME_MAP, Drive
+from goodoc.setup import Setup
 
 DEFAULT_COMMAND = "upload"
 
@@ -20,44 +21,27 @@ class DefaultCommandGroup(TyperGroup):
         return super().parse_args(ctx, args)
 
 
+def _create_app() -> App:
+    config = Config.default()
+    setup = Setup(config)
+    auth = Auth(config, setup)
+    drive = Drive(auth)
+    local_app = App(config, auth, drive)
+
+    return local_app
+
+
 app = typer.Typer(cls=DefaultCommandGroup, no_args_is_help=True)
-
-
-def validate_file(file: Path) -> str | None:
-    if not file.exists():
-        return f"File not found: {file}"
-
-    if file.suffix.lower() not in MIME_MAP:
-        supported = ", ".join(MIME_MAP)
-        return f"Unsupported format: {file.suffix}. Supported: {supported}"
-
-    return None
+_app = _create_app()
 
 
 @app.command(DEFAULT_COMMAND)
-def upload_files(
+def upload(
         files: list[Path] = typer.Argument(..., help=f"Paths to files ({' / '.join(MIME_MAP)})"),
         no_open: bool = typer.Option(False, "--no-open", help="Do not open in browser"),
 ) -> None:
     """Upload office files to Google Drive and open them in the browser."""
-    config = Config.default()
-
-    for file in files:
-        if error := validate_file(file):
-            typer.echo(error, err=True)
-
-            raise typer.Exit(1)
-
-    creds = Auth.get_credentials(config)
-
-    for file in files:
-        typer.echo(f"Uploading {file.name}...")
-
-        url = upload(file, creds)
-        typer.echo(url)
-
-        if not no_open:
-            webbrowser.open(url)
+    _app.upload(files, open_browser=not no_open)
 
 
 @app.command()
@@ -65,31 +49,13 @@ def login(
         key: str | None = typer.Option(None, "--key", help="Access key for the author's shared client"),
 ) -> None:
     """Authenticate with Google (without uploading a file)."""
-    config = Config.default()
-
-    if key is None:
-        Auth.get_credentials(config)
-    else:
-        try:
-            Auth.login_shared(config, key)
-        except ValueError as error:
-            typer.echo(str(error), err=True)
-
-            raise typer.Exit(1)
-
-    typer.echo("Logged in.")
+    _app.login(key)
 
 
 @app.command()
 def logout() -> None:
     """Remove stored token (re-authentication will be required on next run)."""
-    config = Config.default()
-
-    if config.token_path.exists():
-        config.token_path.unlink()
-        typer.echo("Logged out.")
-    else:
-        typer.echo("Not logged in.")
+    _app.logout()
 
 
 if __name__ == "__main__":

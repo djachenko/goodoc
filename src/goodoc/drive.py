@@ -1,9 +1,10 @@
 from pathlib import Path
 
 import typer
-from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
+
+from goodoc.auth import Auth
 
 MIME_MAP = {
     ".doc": (
@@ -37,31 +38,36 @@ MIME_MAP = {
 }
 
 
-def upload(path: Path, creds: Credentials) -> str:
-    suffix = path.suffix.lower()
+class Drive:
+    def __init__(self, auth: Auth) -> None:
+        self._auth = auth
 
-    if suffix not in MIME_MAP:
-        supported = ", ".join(MIME_MAP)
-        typer.echo(f"Unsupported format: {suffix}. Supported: {supported}", err=True)
+    def upload(self, path: Path) -> str:
+        suffix = path.suffix.lower()
 
-        raise typer.Exit(1)
+        if suffix not in MIME_MAP:
+            supported = ", ".join(MIME_MAP)
+            typer.echo(f"Unsupported format: {suffix}. Supported: {supported}", err=True)
 
-    source_mime, target_mime = MIME_MAP[suffix]
+            raise typer.Exit(1)
 
-    service = build("drive", "v3", credentials=creds)
-    media = MediaFileUpload(str(path), mimetype=source_mime, resumable=False)
+        source_mime, target_mime = MIME_MAP[suffix]
+        creds = self._auth.get_credentials()
 
-    result = (
-        service.files()
-        .create(
-            body={
-                "name": path.stem,
-                "mimeType": target_mime,
-            },
-            media_body=media,
-            fields="id,webViewLink",
+        service = build("drive", "v3", credentials=creds)
+        media = MediaFileUpload(str(path), mimetype=source_mime, resumable=False)
+
+        result = (
+            service.files()
+            .create(
+                body={
+                    "name": path.stem,
+                    "mimeType": target_mime,
+                },
+                media_body=media,
+                fields="id,webViewLink",
+            )
+            .execute()
         )
-        .execute()
-    )
 
-    return result["webViewLink"]
+        return result["webViewLink"]

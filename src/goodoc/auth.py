@@ -6,49 +6,49 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 
 from goodoc.client import ACCESS_KEY_HASH
 from goodoc.config import Config
-from goodoc.setup import authorize_shared, first_run_wizard
+from goodoc.setup import Setup
 
 
 class Auth:
-    @staticmethod
-    def get_credentials(config: Config) -> Credentials:
+    def __init__(self, config: Config, setup: Setup) -> None:
+        self.config = config
+        self._setup = setup
+
+    def get_credentials(self) -> Credentials:
         creds = None
 
-        if config.token_path.exists():
-            creds = Credentials.from_authorized_user_file(str(config.token_path), config.scopes)
+        if self.config.token_path.exists():
+            creds = Credentials.from_authorized_user_file(str(self.config.token_path), self.config.scopes)
 
         if not creds or not creds.valid:
             if creds and creds.expired and creds.refresh_token:
                 creds.refresh(Request())
             else:
-                creds = Auth._authorize(config)
+                creds = self._authorize()
 
-            Auth._save(config, creds)
+            self._save(creds)
 
         return creds
 
-    @staticmethod
-    def login_shared(config: Config, access_key: str) -> Credentials:
+    def login_shared(self, access_key: str) -> Credentials:
         if hashlib.sha256(access_key.encode()).hexdigest() != ACCESS_KEY_HASH:
             raise ValueError("Invalid access key.")
 
-        creds = authorize_shared(config, access_key)
-        Auth._save(config, creds)
+        creds = self._setup.authorize_shared(access_key)
+        self._save(creds)
 
         return creds
 
-    @staticmethod
-    def _authorize(config: Config) -> Credentials:
-        if config.credentials_path.exists():
-            flow = InstalledAppFlow.from_client_secrets_file(str(config.credentials_path), config.scopes)
+    def _authorize(self) -> Credentials:
+        if self.config.credentials_path.exists():
+            flow = InstalledAppFlow.from_client_secrets_file(str(self.config.credentials_path), self.config.scopes)
 
             return flow.run_local_server(port=0)
 
-        return first_run_wizard(config)
+        return self._setup.first_run_wizard()
 
-    @staticmethod
-    def _save(config: Config, creds: Credentials) -> None:
-        config.token_path.parent.mkdir(parents=True, exist_ok=True)
+    def _save(self, creds: Credentials) -> None:
+        self.config.token_path.parent.mkdir(parents=True, exist_ok=True)
 
-        with config.token_path.open("w") as f:
+        with self.config.token_path.open("w") as f:
             f.write(creds.to_json())

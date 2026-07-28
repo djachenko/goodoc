@@ -1,7 +1,15 @@
 import pytest
 import typer
+from unittest.mock import MagicMock
 
-from goodoc.drive import MIME_MAP, upload
+from goodoc.drive import MIME_MAP, Drive
+
+
+@pytest.fixture
+def drive(mock_creds):
+    mock_auth = MagicMock()
+    mock_auth.get_credentials.return_value = mock_creds
+    return Drive(mock_auth)
 
 
 class TestMimeMap:
@@ -19,38 +27,30 @@ class TestMimeMap:
 
 @pytest.mark.usefixtures("mock_drive_build")
 class TestUpload:
-    def test_unsupported_extension_exits(self, tmp_path, mock_creds):
-        file = tmp_path / "doc.pdf"
-        file.touch()
+    def test_unsupported_extension_exits(self, drive, tmp_path, create_files):
+        create_files(tmp_path, {"doc.pdf": None})
 
         with pytest.raises(typer.Exit) as exc_info:
-            upload(file, mock_creds)
+            drive.upload(tmp_path / "doc.pdf")
 
         assert exc_info.value.exit_code == 1
 
     @pytest.mark.parametrize("extension", MIME_MAP.keys())
-    def test_supported_extension_returns_url(self, extension, tmp_path, mock_creds):
-        file = tmp_path / f"doc{extension}"
-        file.touch()
+    def test_supported_extension_returns_url(self, drive, extension, tmp_path, create_files):
+        create_files(tmp_path, {f"doc{extension}": None})
 
-        url = upload(file, mock_creds)
-
-        assert url == "https://docs.google.com/doc"
+        assert drive.upload(tmp_path / f"doc{extension}") == "https://docs.google.com/doc"
 
     @pytest.mark.parametrize("filename", ["DOC.DOCX", "Doc.Docx", "sheet.XLSX"])
-    def test_uppercase_extension_accepted(self, filename, tmp_path, mock_creds):
-        file = tmp_path / filename
-        file.touch()
+    def test_uppercase_extension_accepted(self, drive, filename, tmp_path, create_files):
+        create_files(tmp_path, {filename: None})
 
-        assert upload(file, mock_creds) == "https://docs.google.com/doc"
+        assert drive.upload(tmp_path / filename) == "https://docs.google.com/doc"
 
-    def test_creates_with_stem_name_and_target_mime(self, tmp_path, mock_creds, mock_drive_build):
-        file = tmp_path / "report.docx"
-        file.touch()
-
-        upload(file, mock_creds)
+    def test_creates_with_stem_name_and_target_mime(self, drive, docx_file, mock_drive_build):
+        drive.upload(docx_file)
 
         _, kwargs = mock_drive_build.files.return_value.create.call_args
 
-        assert kwargs["body"]["name"] == "report"
+        assert kwargs["body"]["name"] == "doc"
         assert kwargs["body"]["mimeType"] == "application/vnd.google-apps.document"

@@ -30,7 +30,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-test = ["pytest", "ruff", "mypy"]
+test = ["pytest", "ruff==0.15.16", "mypy"]
 release = ["build", "python-semantic-release"]
 
 [tool.setuptools.packages.find]

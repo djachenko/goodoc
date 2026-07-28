@@ -14,9 +14,12 @@ Upload Office files to Google Drive with automatic conversion to native Google f
 ## Usage
 
 ```bash
-goodoc file.docx                    # upload and open in browser
-goodoc file.xlsx --no-open          # upload without opening
+goodoc file.docx                      # upload and open in browser
+goodoc file.xlsx --no-open            # upload without opening
 goodoc file.docx file.xlsx file.pptx  # upload multiple files
+
+goodoc login                          # authorize without uploading
+goodoc logout                         # forget the stored token
 ```
 
 Supported formats:
@@ -47,12 +50,20 @@ pipx install git+https://github.com/djachenko/goodoc.git
 
 ## First run
 
-On the first run, a setup wizard starts automatically:
+goodoc talks to Google Drive through your own Google Cloud project. On the first run, a setup wizard starts automatically:
 
 1. **Google Cloud credentials** — opens the browser, walks you through creating an OAuth client, prompts for the downloaded JSON file
 2. **Authorization** — opens the browser for Google sign-in, saves the token
 
 After that, every run is silent.
+
+There is also a shared client maintained by the author, with limited capacity. If you have an access key, skip the wizard entirely:
+
+```bash
+goodoc login --key <KEY>
+```
+
+Ask for a key in [issues](https://github.com/djachenko/goodoc/issues). Treat the key as a credential — don't publish it.
 
 Enable the Quick Action in: System Settings → Privacy & Security → Extensions → Finder Extensions.
 
@@ -68,7 +79,7 @@ goodoc-uninstall   # remove goodoc, the Quick Action, and credentials
 To re-authorize without uninstalling:
 
 ```bash
-rm ~/.config/goodoc/token.json
+goodoc logout
 ```
 
 ---

@@ -2,6 +2,32 @@
 
 <!-- version list -->
 
+## v1.6.0 (2026-07-28)
+
+### Chores
+
+- Pin ruff to 0.15.16
+  ([`1bd59f2`](https://github.com/djachenko/goodoc/commit/1bd59f2cc82e68e6c9dd1ea816c9bbb1b789ca43))
+
+### Documentation
+
+- Document commands, shared client and its limits
+  ([`4b879bb`](https://github.com/djachenko/goodoc/commit/4b879bbe6f2e5a3a6f03e17c3a0521a967e23b1c))
+
+### Features
+
+- Add login and logout commands
+  ([`c85cfb9`](https://github.com/djachenko/goodoc/commit/c85cfb9399113b6914017eeab9a465c0e3e84625))
+
+- Add shared OAuth client behind access key
+  ([`fd5010f`](https://github.com/djachenko/goodoc/commit/fd5010fe095cbe05b6eeb43c9dd570e244f166dd))
+
+### Refactoring
+
+- Use str | None instead of Optional
+  ([`14ee82c`](https://github.com/djachenko/goodoc/commit/14ee82cdc0d5698a442711adcb4a70b4710760d8))
+
+
 ## v1.5.0 (2026-07-21)
 
 ### Code Style

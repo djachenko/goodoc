@@ -7,11 +7,18 @@ import typer
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 
+from goodoc.client import client_config
 from goodoc.config import Config
 
 
-def acquire_credentials(config: Config) -> None:
-    typer.echo("Step 1/2: Google Cloud credentials")
+def authorize_shared(config: Config, access_key: str) -> Credentials:
+    flow = InstalledAppFlow.from_client_config(client_config(access_key), config.scopes)
+
+    return flow.run_local_server(port=0)
+
+
+def _acquire_credentials(config: Config) -> None:
+    typer.echo("Set up your own Google Cloud project:")
     typer.echo()
     typer.echo("  1. Open Google Cloud Console → APIs & Services → Credentials")
     typer.echo("  2. Create a project (or select existing)")
@@ -30,10 +37,7 @@ def acquire_credentials(config: Config) -> None:
     downloads = Path.home() / "Downloads"
     suggestions = sorted(downloads.glob("client_secret_*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
 
-    if suggestions:
-        hint = f" [{suggestions[0]}]"
-    else:
-        hint = ""
+    hint = f" [{suggestions[0]}]" if suggestions else ""
 
     raw = typer.prompt(f"Path to downloaded credentials JSON{hint}").strip()
 
@@ -56,39 +60,25 @@ def acquire_credentials(config: Config) -> None:
     typer.echo(f"Saved to {config.credentials_path}")
 
 
-def authorize(config: Config) -> Credentials:
-    typer.echo()
-    typer.echo("Step 2/2: Authorize goodoc with Google")
-    typer.echo("A browser window will open — sign in and allow access.")
-    typer.echo()
-
-    flow = InstalledAppFlow.from_client_secrets_file(str(config.credentials_path), config.scopes)
-    creds = flow.run_local_server(port=0)
-
-    config.token_path.parent.mkdir(parents=True, exist_ok=True)
-
-    with config.token_path.open("w") as f:
-        f.write(creds.to_json())
-
-    typer.echo(f"Token saved to {config.token_path}")
-
-    return creds
-
-
 def first_run_wizard(config: Config) -> Credentials:
     if not sys.stdin.isatty():
         typer.echo("goodoc is not configured. Run 'goodoc <file>' from Terminal first.", err=True)
 
         raise typer.Exit(1)
 
-    typer.echo("First run — let's set up goodoc.")
+    typer.echo("First run — goodoc needs a Google Cloud project of its own.")
+    typer.echo("Takes a few minutes, once.")
+    typer.echo()
+    typer.echo("Got an access key from the author? Cancel and run instead:")
+    typer.echo("  goodoc login --key <KEY>")
     typer.echo()
 
-    acquire_credentials(config)
-    creds = authorize(config)
+    _acquire_credentials(config)
 
     typer.echo()
-    typer.echo("All done. Run 'goodoc <file>' to upload.")
+    typer.echo("A browser window will open — sign in and allow access.")
     typer.echo()
 
-    return creds
+    flow = InstalledAppFlow.from_client_secrets_file(str(config.credentials_path), config.scopes)
+
+    return flow.run_local_server(port=0)

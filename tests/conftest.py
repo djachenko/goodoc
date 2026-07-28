@@ -33,7 +33,7 @@ def mock_creds():
 @pytest.fixture
 def mock_get_credentials(monkeypatch):
     mock = MagicMock()
-    monkeypatch.setattr("goodoc.main.get_credentials", mock)
+    monkeypatch.setattr("goodoc.main.Auth.get_credentials", mock)
     return mock
 
 

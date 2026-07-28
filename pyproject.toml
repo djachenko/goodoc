@@ -56,6 +56,10 @@ goodoc = "goodoc.main:app"
 [tool.mypy]
 ignore_missing_imports = true
 
+[tool.ruff.lint.per-file-ignores]
+# B008: typer.Argument/Option in defaults is the intended Typer pattern
+"src/goodoc/main.py" = ["B008"]
+
 [tool.semantic_release]
 version_toml = ["pyproject.toml:project.version"]
 branch = "master"

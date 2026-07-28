@@ -31,23 +31,29 @@ def mock_creds():
 
 
 @pytest.fixture
+def docx_file(tmp_path, create_files):
+    create_files(tmp_path, {"doc.docx": None})
+    return tmp_path / "doc.docx"
+
+
+@pytest.fixture
 def mock_get_credentials(monkeypatch):
-    mock = MagicMock()
-    monkeypatch.setattr("goodoc.main.Auth.get_credentials", mock)
+    mock = MagicMock(return_value=MagicMock())
+    monkeypatch.setattr("goodoc.auth.Auth.get_credentials", mock)
     return mock
 
 
 @pytest.fixture
 def mock_upload(monkeypatch):
     mock = MagicMock(return_value="https://docs.google.com/doc")
-    monkeypatch.setattr("goodoc.main.upload", mock)
+    monkeypatch.setattr("goodoc.drive.Drive.upload", mock)
     return mock
 
 
 @pytest.fixture
 def mock_browser(monkeypatch):
     mock = MagicMock()
-    monkeypatch.setattr("goodoc.main.webbrowser.open", mock)
+    monkeypatch.setattr("goodoc.app.webbrowser.open", mock)
     return mock
 
 

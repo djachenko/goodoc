@@ -11,74 +11,77 @@ from goodoc.client import client_config
 from goodoc.config import Config
 
 
-def authorize_shared(config: Config, access_key: str) -> Credentials:
-    flow = InstalledAppFlow.from_client_config(client_config(access_key), config.scopes)
+class Setup:
+    def __init__(self, config: Config) -> None:
+        self._config = config
 
-    return flow.run_local_server(port=0)
+    def authorize_shared(self, access_key: str) -> Credentials:
+        flow = InstalledAppFlow.from_client_config(client_config(access_key), self._config.scopes)
 
+        return flow.run_local_server(port=0)
 
-def _acquire_credentials(config: Config) -> None:
-    typer.echo("Set up your own Google Cloud project:")
-    typer.echo()
-    typer.echo("  1. Open Google Cloud Console → APIs & Services → Credentials")
-    typer.echo("  2. Create a project (or select existing)")
-    typer.echo("  3. Enable the Google Drive API:")
-    typer.echo("       APIs & Services → Library → search 'Google Drive API' → Enable")
-    typer.echo("  4. Create OAuth credentials:")
-    typer.echo("       Credentials → + Create Credentials → OAuth client ID")
-    typer.echo("       Application type: Desktop app")
-    typer.echo("  5. Download the JSON file")
-    typer.echo()
+    def first_run_wizard(self) -> Credentials:
+        if not sys.stdin.isatty():
+            typer.echo("goodoc is not configured. Run 'goodoc <file>' from Terminal first.", err=True)
 
-    typer.echo("Opening Google Cloud Console in browser...")
-    webbrowser.open("https://console.cloud.google.com/apis/credentials")
-    typer.echo()
+            raise typer.Exit(1)
 
-    downloads = Path.home() / "Downloads"
-    suggestions = sorted(downloads.glob("client_secret_*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
+        typer.echo("First run — goodoc needs a Google Cloud project of its own.")
+        typer.echo("Takes a few minutes, once.")
+        typer.echo()
+        typer.echo("Got an access key from the author? Cancel and run instead:")
+        typer.echo("  goodoc login --key <KEY>")
+        typer.echo()
 
-    hint = f" [{suggestions[0]}]" if suggestions else ""
+        self._acquire_credentials()
 
-    raw = typer.prompt(f"Path to downloaded credentials JSON{hint}").strip()
+        typer.echo()
+        typer.echo("A browser window will open — sign in and allow access.")
+        typer.echo()
 
-    if raw:
-        src = Path(raw).expanduser()
-    elif suggestions:
-        src = suggestions[0]
-    else:
-        typer.echo("No path provided.", err=True)
+        flow = InstalledAppFlow.from_client_secrets_file(str(self._config.credentials_path), self._config.scopes)
 
-        raise typer.Exit(1)
+        return flow.run_local_server(port=0)
 
-    if not src.exists():
-        typer.echo(f"File not found: {src}", err=True)
+    def _acquire_credentials(self) -> None:
+        typer.echo("Set up your own Google Cloud project:")
+        typer.echo()
+        typer.echo("  1. Open Google Cloud Console → APIs & Services → Credentials")
+        typer.echo("  2. Create a project (or select existing)")
+        typer.echo("  3. Enable the Google Drive API:")
+        typer.echo("       APIs & Services → Library → search 'Google Drive API' → Enable")
+        typer.echo("  4. Create OAuth credentials:")
+        typer.echo("       Credentials → + Create Credentials → OAuth client ID")
+        typer.echo("       Application type: Desktop app")
+        typer.echo("  5. Download the JSON file")
+        typer.echo()
 
-        raise typer.Exit(1)
+        typer.echo("Opening Google Cloud Console in browser...")
+        webbrowser.open("https://console.cloud.google.com/apis/credentials")
+        typer.echo()
 
-    config.goodoc_dir.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(src, config.credentials_path)
-    typer.echo(f"Saved to {config.credentials_path}")
+        downloads = Path.home() / "Downloads"
+        suggestions = sorted(downloads.glob("client_secret_*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
 
+        hint = f" [{suggestions[0]}]" if suggestions else ""
 
-def first_run_wizard(config: Config) -> Credentials:
-    if not sys.stdin.isatty():
-        typer.echo("goodoc is not configured. Run 'goodoc <file>' from Terminal first.", err=True)
+        raw = typer.prompt(f"Path to downloaded credentials JSON{hint}").strip()
 
-        raise typer.Exit(1)
+        if raw:
+            src = Path(raw).expanduser()
+        elif suggestions:
+            src = suggestions[0]
+        else:
+            typer.echo("No path provided.", err=True)
 
-    typer.echo("First run — goodoc needs a Google Cloud project of its own.")
-    typer.echo("Takes a few minutes, once.")
-    typer.echo()
-    typer.echo("Got an access key from the author? Cancel and run instead:")
-    typer.echo("  goodoc login --key <KEY>")
-    typer.echo()
+            raise typer.Exit(1)
 
-    _acquire_credentials(config)
+        if not src.exists():
+            typer.echo(f"File not found: {src}", err=True)
 
-    typer.echo()
-    typer.echo("A browser window will open — sign in and allow access.")
-    typer.echo()
+            raise typer.Exit(1)
 
-    flow = InstalledAppFlow.from_client_secrets_file(str(config.credentials_path), config.scopes)
+        self._config.goodoc_dir.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(src, self._config.credentials_path)
 
-    return flow.run_local_server(port=0)
+        typer.echo(f"Saved to {self._config.credentials_path}")

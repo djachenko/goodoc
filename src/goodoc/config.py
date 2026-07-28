@@ -2,7 +2,7 @@ import os
 from dataclasses import dataclass
 from functools import cached_property
 from pathlib import Path
-from typing import Self, ClassVar
+from typing import ClassVar, Self
 
 
 @dataclass(frozen=True)

@@ -1,6 +1,6 @@
 import webbrowser
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 import typer
 from typer.core import TyperGroup
@@ -62,7 +62,7 @@ def upload_files(
 
 @app.command()
 def login(
-        key: Optional[str] = typer.Option(None, "--key", help="Access key for the author's shared client"),
+        key: str | None = typer.Option(None, "--key", help="Access key for the author's shared client"),
 ) -> None:
     """Authenticate with Google (without uploading a file)."""
     config = Config.default()

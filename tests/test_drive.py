@@ -1,6 +1,7 @@
+from unittest.mock import MagicMock
+
 import pytest
 import typer
-from unittest.mock import MagicMock
 
 from goodoc.drive import MIME_MAP, Drive
 

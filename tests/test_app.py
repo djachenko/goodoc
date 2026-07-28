@@ -1,8 +1,8 @@
 from pathlib import Path
+from unittest.mock import MagicMock
 
 import pytest
 import typer
-from unittest.mock import MagicMock
 
 from goodoc.app import App
 from goodoc.auth import Auth

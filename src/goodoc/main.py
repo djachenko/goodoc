@@ -37,7 +37,7 @@ _app = _create_app()
 
 @app.command(DEFAULT_COMMAND)
 def upload(
-        files: list[Path] = typer.Argument(..., help=f"Paths to files ({' / '.join(MIME_MAP)})"),
+        files: list[Path] = typer.Argument(..., help=f"Paths to files ({' / '.join(MIME_MAP)})"),  # noqa: B008
         no_open: bool = typer.Option(False, "--no-open", help="Do not open in browser"),
 ) -> None:
     """Upload office files to Google Drive and open them in the browser."""

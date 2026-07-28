@@ -1,7 +1,7 @@
 import hashlib
+from unittest.mock import MagicMock, patch
 
 import pytest
-from unittest.mock import MagicMock, patch
 
 from goodoc.auth import Auth
 from goodoc.config import Config
@@ -40,9 +40,11 @@ class TestGetCredentials:
 
         creds = MagicMock(valid=True)
 
-        with patch("goodoc.auth.Credentials.from_authorized_user_file", return_value=creds):
-            with patch("goodoc.auth.InstalledAppFlow.from_client_secrets_file") as flow_factory:
-                result = auth.get_credentials()
+        with (
+            patch("goodoc.auth.Credentials.from_authorized_user_file", return_value=creds),
+            patch("goodoc.auth.InstalledAppFlow.from_client_secrets_file") as flow_factory,
+        ):
+            result = auth.get_credentials()
 
         assert result is creds
         creds.refresh.assert_not_called()
@@ -58,9 +60,11 @@ class TestGetCredentials:
         creds = MagicMock(valid=False, expired=True, refresh_token="rt")
         creds.to_json.return_value = refreshed_token
 
-        with patch("goodoc.auth.Credentials.from_authorized_user_file", return_value=creds):
-            with patch("goodoc.auth.Request"):
-                result = auth.get_credentials()
+        with (
+            patch("goodoc.auth.Credentials.from_authorized_user_file", return_value=creds),
+            patch("goodoc.auth.Request"),
+        ):
+            result = auth.get_credentials()
 
         creds.refresh.assert_called_once()
         assert result is creds

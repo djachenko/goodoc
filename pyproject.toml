@@ -34,7 +34,7 @@ dependencies = [
 [project.optional-dependencies]
 test = [
     "pytest",
-    "ruff >= 0.15, < 0.16",
+    "ruff >= 0.16, < 0.17",
     "mypy"
 ]
 release = [

@@ -44,6 +44,8 @@ goodoc/
 ├── CLAUDE.md
 ├── install.sh               # полная установка: pipx + workflow + shell.sh
 ├── pyproject.toml
+├── docs/
+│   └── oauth-client.md      # как получить credentials.json (с нуля и для существующего клиента)
 ├── workflow/                # шаблон Automator Quick Action (копируется install.sh)
 │   └── Contents/
 │       ├── document.wflow
@@ -100,6 +102,8 @@ Scope: `https://www.googleapis.com/auth/drive.file` — доступ тольк�
 Раздавать ключ адресно. Утёкший ключ = доступ к общему клиенту и расход ячеек.
 
 Если Drive API не включён в Cloud Console проекте — включить в APIs & Services → Library.
+
+Пошаговый гайд по созданию клиента — [docs/oauth-client.md](docs/oauth-client.md). Отдельно разобран случай существующего клиента: секрет повторно не скачивается, нужен Client secrets → Add secret.
 
 ---
 

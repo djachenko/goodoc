@@ -21,11 +21,9 @@ def setup(config):
 
 @pytest.fixture
 def source_credentials(tmp_path, create_files):
-    create_files(tmp_path, {"downloaded.json": None})
-    source = tmp_path / "downloaded.json"
-    source.write_text('{"installed": {}}')
+    create_files(tmp_path, {"downloaded.json": '{"installed": {}}'})
 
-    return source
+    return tmp_path / "downloaded.json"
 
 
 @pytest.fixture
@@ -111,9 +109,8 @@ class TestAcquireCredentials:
         assert mock_prompt.call_count == 2
         assert config.credentials_path.exists()
 
-    def test_empty_input_takes_suggestion(self, setup, config, mock_prompt, downloads):
-        suggested = downloads / "client_secret_1.json"
-        suggested.write_text('{"suggested": true}')
+    def test_empty_input_takes_suggestion(self, setup, config, mock_prompt, downloads, create_files):
+        create_files(downloads, {"client_secret_1.json": '{"suggested": true}'})
         mock_prompt.return_value = ""
 
         setup._acquire_credentials()
@@ -132,17 +129,13 @@ class TestLatestDownload:
     def test_returns_none_when_nothing_downloaded(self, setup, downloads):
         assert setup._latest_download() is None
 
-    def test_ignores_unrelated_files(self, setup, downloads):
-        (downloads / "report.json").touch()
+    def test_ignores_unrelated_files(self, setup, downloads, create_files):
+        create_files(downloads, {"report.json": None})
 
         assert setup._latest_download() is None
 
-    def test_returns_most_recent(self, setup, downloads):
-        older = downloads / "client_secret_old.json"
-        newer = downloads / "client_secret_new.json"
+    def test_returns_most_recent(self, setup, downloads, create_files):
+        create_files(downloads, {"client_secret_old.json": None, "client_secret_new.json": None})
+        os.utime(downloads / "client_secret_old.json", (1, 1))
 
-        older.touch()
-        newer.touch()
-        os.utime(older, (1, 1))
-
-        assert setup._latest_download() == newer
+        assert setup._latest_download() == downloads / "client_secret_new.json"

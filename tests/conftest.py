@@ -1,21 +1,29 @@
+from collections.abc import Callable
 from pathlib import Path
 from unittest.mock import MagicMock
 
 import pytest
 from typer.testing import CliRunner
 
+FileTree = dict[str, "FileTree | str | bytes | None"]
+
 
 @pytest.fixture
-def create_files():
-    def _create(root: Path, structure: dict):
+def create_files() -> Callable[[Path, FileTree], None]:
+    def _create(root: Path, structure: FileTree) -> None:
         for key, value in structure.items():
-            path = root / key
+            new_path = root / key
 
             if value is None:
-                path.touch()
+                new_path.touch()
+            elif isinstance(value, str):
+                new_path.write_text(value)
+            elif isinstance(value, bytes):
+                new_path.write_bytes(value)
             elif isinstance(value, dict):
-                path.mkdir(parents=True, exist_ok=True)
-                _create(path, value)
+                new_path.mkdir(parents=True, exist_ok=True)
+
+                _create(new_path, value)
 
     return _create
 

@@ -25,10 +25,8 @@ def goodoc(config_dir, monkeypatch):
 
 
 @pytest.fixture
-def authorized(config_dir):
-    config_dir.mkdir(parents=True, exist_ok=True)
-    (config_dir / "credentials.json").write_text("{}")
-    (config_dir / "token.json").write_text("{}")
+def authorized(tmp_path, config_dir, create_files):
+    create_files(tmp_path, {"goodoc": {"credentials.json": "{}", "token.json": "{}"}})
 
     with patch("goodoc.auth.Credentials.from_authorized_user_file", return_value=MagicMock(valid=True)):
         yield

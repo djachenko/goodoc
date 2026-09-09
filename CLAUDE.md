@@ -46,6 +46,9 @@ goodoc/
 ├── pyproject.toml
 ├── docs/
 │   └── oauth-client.md      # как получить credentials.json (с нуля и для существующего клиента)
+├── scripts/
+│   └── no_ternary.py        # AST-проверка на тернарники, job style в CI
+├── tests/                   # pytest: conftest с фикстурами, файл на модуль + test_integration
 ├── workflow/                # шаблон Automator Quick Action (копируется install.sh)
 │   └── Contents/
 │       ├── document.wflow

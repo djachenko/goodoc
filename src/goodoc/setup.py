@@ -65,12 +65,19 @@ class Setup:
         typer.echo()
 
         while True:
-            suggestion = self._latest_download()
-            hint = f" [{suggestion}]" if suggestion else ""
+            if suggestion := self._latest_download():
+                hint = f" [{suggestion}]"
+            else:
+                hint = ""
 
             raw = typer.prompt(f"Path to downloaded credentials JSON{hint}", default="", show_default=False).strip()
 
-            src = Path(raw).expanduser() if raw else suggestion
+            src: Path | None
+
+            if raw:
+                src = Path(raw).expanduser()
+            else:
+                src = suggestion
 
             if src is None:
                 continue
@@ -94,4 +101,7 @@ class Setup:
             reverse=True,
         )
 
-        return downloads[0] if downloads else None
+        if not downloads:
+            return None
+
+        return downloads[0]

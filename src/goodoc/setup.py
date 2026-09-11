@@ -53,35 +53,55 @@ class Setup:
         typer.echo("  4. Create OAuth credentials:")
         typer.echo("       Credentials → + Create Credentials → OAuth client ID")
         typer.echo("       Application type: Desktop app")
-        typer.echo("  5. Download the JSON file")
+        typer.echo("  5. Download the JSON file from the dialog shown right after creation")
+        typer.echo()
+        typer.echo("Client already exists? Its secret can no longer be downloaded —")
+        typer.echo("open the client and use Client secrets -> Add secret, then download that JSON.")
+        typer.echo("Details: https://github.com/djachenko/goodoc/blob/master/docs/oauth-client.md")
         typer.echo()
 
         typer.echo("Opening Google Cloud Console in browser...")
         webbrowser.open("https://console.cloud.google.com/apis/credentials")
         typer.echo()
 
-        downloads = Path.home() / "Downloads"
-        suggestions = sorted(downloads.glob("client_secret_*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
+        while True:
+            if suggestion := self._latest_download():
+                hint = f" [{suggestion}]"
+            else:
+                hint = ""
 
-        hint = f" [{suggestions[0]}]" if suggestions else ""
+            raw = typer.prompt(f"Path to downloaded credentials JSON{hint}", default="", show_default=False).strip()
 
-        raw = typer.prompt(f"Path to downloaded credentials JSON{hint}").strip()
+            src: Path | None
 
-        if raw:
-            src = Path(raw).expanduser()
-        elif suggestions:
-            src = suggestions[0]
-        else:
-            typer.echo("No path provided.", err=True)
+            if raw:
+                src = Path(raw).expanduser()
+            else:
+                src = suggestion
 
-            raise typer.Exit(1)
+            if src is None:
+                continue
 
-        if not src.exists():
-            typer.echo(f"File not found: {src}", err=True)
+            if not src.exists():
+                typer.echo(f"File not found: {src}", err=True)
 
-            raise typer.Exit(1)
+                continue
+
+            break
 
         self._config.goodoc_dir.mkdir(parents=True, exist_ok=True)
         shutil.copy2(src, self._config.credentials_path)
 
         typer.echo(f"Saved to {self._config.credentials_path}")
+
+    def _latest_download(self) -> Path | None:
+        downloads = sorted(
+            (Path.home() / "Downloads").glob("client_secret_*.json"),
+            key=lambda p: p.stat().st_mtime,
+            reverse=True,
+        )
+
+        if not downloads:
+            return None
+
+        return downloads[0]

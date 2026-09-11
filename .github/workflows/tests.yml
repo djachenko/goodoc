@@ -11,3 +11,17 @@ jobs:
   tests:
     uses: djachenko/repokit/.github/workflows/python-tests.yml@0.9
     secrets: inherit
+
+  style:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.x"
+
+      - name: No ternaries
+        run: python scripts/no_ternary.py src tests

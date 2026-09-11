@@ -1,4 +1,5 @@
 import hashlib
+from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -9,22 +10,22 @@ from goodoc.setup import Setup
 
 
 @pytest.fixture
-def config(tmp_path):
+def config(tmp_path: Path) -> Config:
     return Config(goodoc_dir=tmp_path, scopes=[])
 
 
 @pytest.fixture
-def mock_setup():
+def mock_setup() -> MagicMock:
     return MagicMock(spec=Setup)
 
 
 @pytest.fixture
-def auth(config, mock_setup):
+def auth(config: Config, mock_setup: MagicMock) -> Auth:
     return Auth(config, mock_setup)
 
 
 class TestGetCredentials:
-    def test_no_credentials_runs_wizard(self, auth, mock_setup):
+    def test_no_credentials_runs_wizard(self, auth: Auth, mock_setup: MagicMock) -> None:
         wizard_creds = MagicMock()
         wizard_creds.to_json.return_value = "{}"
         mock_setup.first_run_wizard.return_value = wizard_creds
@@ -34,7 +35,7 @@ class TestGetCredentials:
         mock_setup.first_run_wizard.assert_called_once()
         assert result is wizard_creds
 
-    def test_valid_token_loaded_from_file(self, auth, config):
+    def test_valid_token_loaded_from_file(self, auth: Auth, config: Config) -> None:
         config.credentials_path.write_text("{}")
         config.token_path.write_text("{}")
 
@@ -51,7 +52,7 @@ class TestGetCredentials:
         flow_factory.assert_not_called()
         assert config.token_path.read_text() == "{}"
 
-    def test_expired_token_refreshed_and_written(self, auth, config):
+    def test_expired_token_refreshed_and_written(self, auth: Auth, config: Config) -> None:
         config.credentials_path.write_text("{}")
         config.token_path.write_text("{}")
 
@@ -70,7 +71,7 @@ class TestGetCredentials:
         assert result is creds
         assert config.token_path.read_text() == refreshed_token
 
-    def test_no_token_runs_flow_and_writes(self, auth, config):
+    def test_no_token_runs_flow_and_writes(self, auth: Auth, config: Config) -> None:
         config.credentials_path.write_text("{}")
 
         fresh_token = '{"token": "fresh"}'
@@ -89,13 +90,18 @@ class TestGetCredentials:
 
 
 class TestLoginShared:
-    def test_invalid_key_rejected(self, auth, mock_setup):
+    def test_invalid_key_rejected(self, auth: Auth, mock_setup: MagicMock) -> None:
         with pytest.raises(ValueError):
             auth.login_shared("wrong-key")
 
         mock_setup.authorize_shared.assert_not_called()
 
-    def test_valid_key_authorizes_and_writes(self, auth, config, mock_setup):
+    def test_valid_key_authorizes_and_writes(
+            self,
+            auth: Auth,
+            config: Config,
+            mock_setup: MagicMock,
+    ) -> None:
         shared_token = '{"token": "shared"}'
 
         creds = MagicMock()

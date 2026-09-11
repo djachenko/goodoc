@@ -50,10 +50,17 @@ pipx install git+https://github.com/djachenko/goodoc.git
 
 ## First run
 
-goodoc talks to Google Drive through your own Google Cloud project. On the first run, a setup wizard starts automatically:
+goodoc talks to Google Drive through your own Google Cloud project.
+
+Google gates Drive access behind an OAuth client, and shipping a single shared client for everybody requires app verification — a domain, a privacy policy, a review. Until that happens, each user creates their own client. It's a one-time step.
+
+On the first run, a setup wizard starts automatically:
 
 1. **Google Cloud credentials** — opens the browser, walks you through creating an OAuth client, prompts for the downloaded JSON file
+   — step by step, including the case of a client that already exists: [docs/oauth-client.md](docs/oauth-client.md)
 2. **Authorization** — opens the browser for Google sign-in, saves the token
+
+Google shows an "unverified app" warning during authorization. It refers to the client you just created — proceed past it.
 
 After that, every run is silent.
 

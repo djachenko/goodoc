@@ -2,6 +2,62 @@
 
 <!-- version list -->
 
+## v1.7.0 (2026-09-11)
+
+### Chores
+
+- Fix pyproject.toml inline table syntax
+  ([`73beee6`](https://github.com/djachenko/goodoc/commit/73beee6d075e3985ef0fc5cd604d3be190345cfd))
+
+- Move B008 ignore to pyproject per-file-ignores
+  ([`7af8c44`](https://github.com/djachenko/goodoc/commit/7af8c44ad6d68c8a52a3b515a7beaa2542fe046e))
+
+- Upgrade ruff to 0.16, fix new lint errors
+  ([`6d76078`](https://github.com/djachenko/goodoc/commit/6d7607821417376a9ee09f5b25ea40cd1eb3fc96))
+
+### Code Style
+
+- Make Auth config field private
+  ([`58c5b73`](https://github.com/djachenko/goodoc/commit/58c5b73d3cdc4e0d925f36aaca7397e05fe43c4c))
+
+### Continuous Integration
+
+- Fail the build on ternary expressions
+  ([`8e6e077`](https://github.com/djachenko/goodoc/commit/8e6e077ffa8d9fe6d1201498d356f03f9bb06bec))
+
+### Documentation
+
+- Add OAuth client setup guide
+  ([`e6f7e02`](https://github.com/djachenko/goodoc/commit/e6f7e021fb46d4c9de295b740ad8b32b2bae5cef))
+
+### Features
+
+- Keep prompting until credentials file is found
+  ([`b051066`](https://github.com/djachenko/goodoc/commit/b051066723ec963257034388ed65013378ae84b8))
+
+### Refactoring
+
+- Convert to class-based DI architecture
+  ([`56574dd`](https://github.com/djachenko/goodoc/commit/56574ddca07346832103626ccd7bcfcc0a2ae08d))
+
+- Unfold ternaries in credentials prompt
+  ([`8010c60`](https://github.com/djachenko/goodoc/commit/8010c6084bd90da872db04dc275b60ecd4ee4c5d))
+
+### Testing
+
+- Add type hints and expand collection literals
+  ([`0a93994`](https://github.com/djachenko/goodoc/commit/0a9399414e6b9fcc0070c7a9560eb5f0478bc9e5))
+
+- Align create_files fixture with justin_utils
+  ([`e1a94ec`](https://github.com/djachenko/goodoc/commit/e1a94ec142d1c8199a828e428735ee0ad2d839be))
+
+- Cover setup wizard, shared client and end-to-end CLI
+  ([`45fa768`](https://github.com/djachenko/goodoc/commit/45fa768ff04b0f558ed784b2ae0d88b1e2ce510e))
+
+- Update and extend tests for class-based DI
+  ([`09dd99e`](https://github.com/djachenko/goodoc/commit/09dd99ef5453f5fbb5b8fcbb60a8b8aeec1ae2cf))
+
+
 ## v1.6.0 (2026-07-28)
 
 ### Chores

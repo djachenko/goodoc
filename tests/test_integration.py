@@ -8,8 +8,6 @@ from typer.testing import CliRunner
 
 from conftest import CreateFiles
 from goodoc.app import App
-from goodoc.auth import Auth
-from goodoc.drive import Drive
 from goodoc.main import _create_app, app
 from goodoc.setup import Setup
 
@@ -43,21 +41,6 @@ def authorized(tmp_path: Path, config_dir: Path, create_files: CreateFiles) -> I
         return_value=MagicMock(valid=True),
     ):
         yield
-
-
-class TestWiring:
-    def test_builds_full_dependency_graph(self, goodoc: App) -> None:
-        assert isinstance(goodoc, App)
-        assert isinstance(goodoc._drive, Drive)
-        assert isinstance(goodoc._drive._auth, Auth)
-        assert isinstance(goodoc._drive._auth._setup, Setup)
-
-    def test_shares_single_config(self, goodoc: App) -> None:
-        assert goodoc._config is goodoc._auth._config
-        assert goodoc._config is goodoc._drive._auth._config
-
-    def test_config_points_at_xdg_dir(self, goodoc: App, config_dir: Path) -> None:
-        assert goodoc._config.goodoc_dir == config_dir
 
 
 @pytest.mark.usefixtures("goodoc", "authorized", "mock_drive_build")

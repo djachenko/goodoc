@@ -65,21 +65,21 @@ class Setup:
         typer.echo()
 
         while True:
-            if suggestion := self._latest_download():
-                hint = f" [{suggestion}]"
+            suggestion = self._latest_download()
+
+            if suggestion:
+                typer.echo(f"There's already ~/{suggestion.relative_to(Path.home())}")
+                question = "Is that the one? Hit Enter to use it. Or drag another file here / type its path"
             else:
-                hint = ""
+                question = "Once it's in ~/Downloads, hit Enter and I'll pick it up. Or drag the file here / type its path"
 
-            raw = typer.prompt(f"Path to downloaded credentials JSON{hint}", default="", show_default=False).strip()
-
-            src: Path | None
+            raw = typer.prompt(question, default="", show_default=False).strip()
 
             if raw:
                 src = Path(raw).expanduser()
-            else:
+            elif suggestion and self._latest_download() == suggestion:
                 src = suggestion
-
-            if src is None:
+            else:
                 continue
 
             if not src.exists():

@@ -176,6 +176,55 @@ class TestAcquireCredentials:
 
         assert mock_prompt.call_count == 2
 
+    def test_newer_download_during_prompt_reprompts_then_takes_it(
+            self,
+            setup: Setup,
+            config: Config,
+            mock_prompt: MagicMock,
+            downloads: Path,
+            create_files: CreateFiles,
+    ) -> None:
+        create_files(downloads, {
+            "client_secret_old.json": '{"old": true}',
+        })
+        os.utime(downloads / "client_secret_old.json", (1, 1))
+
+        def enter_after_downloading(*args: object, **kwargs: object) -> str:
+            create_files(downloads, {
+                "client_secret_new.json": '{"new": true}',
+            })
+
+            return ""
+
+        mock_prompt.side_effect = enter_after_downloading
+
+        setup._acquire_credentials()
+
+        assert mock_prompt.call_count == 2
+        assert config.credentials_path.read_text() == '{"new": true}'
+
+    def test_download_appearing_during_prompt_reprompts_then_takes_it(
+            self,
+            setup: Setup,
+            config: Config,
+            mock_prompt: MagicMock,
+            downloads: Path,
+            create_files: CreateFiles,
+    ) -> None:
+        def enter_after_downloading(*args: object, **kwargs: object) -> str:
+            create_files(downloads, {
+                "client_secret_1.json": '{"fresh": true}',
+            })
+
+            return ""
+
+        mock_prompt.side_effect = enter_after_downloading
+
+        setup._acquire_credentials()
+
+        assert mock_prompt.call_count == 2
+        assert config.credentials_path.read_text() == '{"fresh": true}'
+
 
 class TestLatestDownload:
     def test_returns_none_when_nothing_downloaded(self, setup: Setup, downloads: Path) -> None:

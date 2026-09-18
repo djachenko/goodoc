@@ -2,6 +2,19 @@
 
 <!-- version list -->
 
+## v1.8.0 (2026-09-18)
+
+### Features
+
+- Explain and rescan Downloads on Enter in credentials prompt
+  ([`b7d9834`](https://github.com/djachenko/goodoc/commit/b7d9834ff5cc1ce389f4e1615ae3f437e47768dc))
+
+### Testing
+
+- Drop TestWiring in favour of behavioural checks
+  ([`15a7996`](https://github.com/djachenko/goodoc/commit/15a79963be2b521083a3980a68af55afee0ae21a))
+
+
 ## v1.7.0 (2026-09-11)
 
 ### Chores
